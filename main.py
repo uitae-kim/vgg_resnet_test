@@ -15,7 +15,7 @@ def main(argv):
     model = VGG16()
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     print(model.summary())
-    model.fit(x_train, y_train, epochs=argv[1])
+    model.fit(x_train, y_train, epochs=int(argv[1]))
 
 
 if __name__=="__main__":
