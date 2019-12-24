@@ -24,15 +24,15 @@ class ResNet:
         resnet50.summary()
 
     def resnet_layer(self, x, settings: list):
-        x = Conv2D(settings[0].unit, settings[0].filter, settings[0].strides, settings[0].padding)(x)
+        x = Conv2D(settings[0].unit, settings[0].filter, strides=settings[0].strides, padding=settings[0].padding)(x)
         x = BatchNormalization()(x)
         x = Activation('relu')(x)
 
-        x = Conv2D(settings[1].unit, settings[1].filter, settings[1].strides, settings[1].padding)(x)
+        x = Conv2D(settings[1].unit, settings[1].filter, strides=settings[1].strides, padding=settings[1].padding)(x)
         x = BatchNormalization()(x)
         x = Activation('relu')(x)
 
-        x = Conv2D(settings[2].unit, settings[2].filter, settings[2].strides, settings[2].padding)(x)
+        x = Conv2D(settings[2].unit, settings[2].filter, strides=settings[2].strides, padding=settings[2].padding)(x)
         x = BatchNormalization()(x)
         x = Activation('relu')(x)
 
