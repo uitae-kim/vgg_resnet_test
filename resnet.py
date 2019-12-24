@@ -1,6 +1,7 @@
 import keras
 from keras import Model
 from keras.layers import Add, Activation, Conv2D, Dense, BatchNormalization, ZeroPadding2D, GlobalAveragePooling2D, MaxPool2D
+from keras.optimizers import SGD
 
 
 class ResNetSettings:
@@ -22,6 +23,11 @@ class ResNet:
 
         resnet50 = Model(input_tensor, output_tensor, name="ResNet")
         resnet50.summary()
+
+        sgd = SGD(learning_rate=0.1, momentum=0.9, decay=0.0001)
+        resnet50.compile(sgd, loss="categorical_crossentropy", metrics=["accuracy"])
+        self.model = resnet50
+
 
     def resnet_layer(self, x, settings: list):
         x = Conv2D(settings[0].unit, settings[0].filter, strides=settings[0].strides, padding=settings[0].padding)(x)

@@ -31,6 +31,7 @@ def main_resnet(argv):
     y_test = keras.utils.to_categorical(y_test, num_classes=10)
 
     resnet = ResNet(Input(shape=(32, 32, 3), dtype='float32', name='input'))
+    resnet.model.fit(x_train, y_train, batch_size=50, epochs=int(argv[2]))
 
 
 if __name__=="__main__":
