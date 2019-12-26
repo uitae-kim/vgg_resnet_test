@@ -20,6 +20,8 @@ def main_vgg(argv):
     print(model.summary())
     model.fit(x_train, y_train, batch_size=50, epochs=int(argv[2])) #0번 index에 main.py가 들어감
 
+    model.save("Model/vgg.model")
+
 
 def main_resnet(argv):
     dataset = keras.datasets.cifar10

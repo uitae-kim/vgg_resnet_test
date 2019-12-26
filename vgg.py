@@ -1,6 +1,41 @@
 import keras
+from vgg_config import *
 from keras.layers import Conv2D, Flatten, BatchNormalization, Dropout, MaxPool2D, Dense
 from keras.models import Sequential
+
+class VGG(Sequential):
+    def __init__(self, config:str):
+        super().__init__(name=config)
+        if config not in globals():
+            print("%s config does not exist" % config)
+        vgg = globals()[config]
+
+        for i, conv_layer in enumerate(vgg):
+            if i == len(vgg)-1:
+                self.add(Flatten())
+                for j in range(len(conv_layer)-1):
+                    self.add(Dense(conv_layer[j], activation='relu', kernel_regularizer=keras.regularizers.l2(l2_reg)))
+                self.add(Dense(conv_layer[-1], activation='softmax'))
+            else:
+                for j in range(len(conv_layer)):
+                    if j == 0 and i == 0:
+                        self.add_conv(conv_layer[j], input_shape=(32, 32, 3))
+                    else:
+                        self.add_conv(conv_layer[j])
+                self.add(MaxPool2D(strides=(2, 2)))
+                
+    def add_conv(self, filters, input_shape=None):
+        if input_shape is not None:
+            self.add(Conv2D(filters, input_shape=input_shape,
+                            kernel_size=kernel_size, padding=padding,
+                            activation=activation,
+                            kernel_regularizer=keras.regularizers.l2(l2_reg)))
+        else:
+            self.add(Conv2D(filters,
+                            kernel_size=kernel_size, padding=padding,
+                            activation=activation,
+                            kernel_regularizer=keras.regularizers.l2(l2_reg)))
+        self.add(BatchNormalization())
 
 class VGG16(Sequential):
     def __init__(self):
