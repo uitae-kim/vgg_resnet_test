@@ -19,6 +19,7 @@ def main_vgg(argv):
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     print(model.summary())
     model.fit(x_train, y_train, batch_size=50, epochs=int(argv[2])) #0번 index에 main.py가 들어감
+    print(model.evaluate(x_test, y_test))
 
     model.save("Model/vgg.model")
 
