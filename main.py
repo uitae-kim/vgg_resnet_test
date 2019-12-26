@@ -1,7 +1,7 @@
 import tensorflow as tf
 import keras
 from keras import Input
-from vgg import VGG16
+from vgg import VGG16, VGG
 from resnet import ResNet
 import sys
 
@@ -15,7 +15,7 @@ def main_vgg(argv):
     y_train = keras.utils.to_categorical(y_train, num_classes=10)
     y_test = keras.utils.to_categorical(y_test, num_classes=10)
 
-    model = VGG16()
+    model = VGG(argv[1])
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     print(model.summary())
     model.fit(x_train, y_train, batch_size=50, epochs=int(argv[2])) #0번 index에 main.py가 들어감
@@ -37,7 +37,7 @@ def main_resnet(argv):
 
 
 if __name__=="__main__":
-    if sys.argv[1] == "vgg":
+    if "vgg" in sys.argv[1]:
         main_vgg(sys.argv)
     elif sys.argv[1] == "resnet":
         main_resnet(sys.argv)
