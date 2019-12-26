@@ -23,7 +23,7 @@ class VGG(Sequential):
                     else:
                         self.add_conv(conv_layer[j])
                 self.add(MaxPool2D(strides=(2, 2)))
-                
+
     def add_conv(self, filters, input_shape=None):
         if input_shape is not None:
             self.add(Conv2D(filters, input_shape=input_shape,
@@ -93,3 +93,7 @@ class VGG16(Sequential):
         self.add(Dense(4096, activation='relu', kernel_regularizer=keras.regularizers.l2(0.0005)))
         self.add(Dense(4096, activation='relu', kernel_regularizer=keras.regularizers.l2(0.0005)))
         self.add(Dense(10, activation='softmax'))
+
+    if __init__ == "__main__":
+        vgg = VGG('vgg11')
+        vgg.summary()
