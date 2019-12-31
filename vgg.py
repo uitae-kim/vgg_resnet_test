@@ -22,6 +22,9 @@ class VGG(Sequential):
                         self.add_conv(conv_layer[j], input_shape=(32, 32, 3))
                     else:
                         self.add_conv(conv_layer[j])
+
+                    if j < len(conv_layer)-1:
+                        self.add(Dropout(0.4))
                 self.add(MaxPool2D(strides=(2, 2)))
 
     def add_conv(self, filters, input_shape=None):
