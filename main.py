@@ -49,7 +49,7 @@ def main_vgg(argv):
     def lr_scheduler(epoch):
         return lr * (0.5 ** (epoch // lr_drop))
     reduce_lr = keras.callbacks.LearningRateScheduler(lr_scheduler)
-    sgd = SGD(learning_rate=lr, decay=lr_decay, momentum=0.9, nesterov=True)
+    sgd = SGD(lr=lr, decay=lr_decay, momentum=0.9, nesterov=True)
 
     model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
     print(model.summary())
