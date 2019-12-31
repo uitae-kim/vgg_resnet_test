@@ -51,6 +51,8 @@ def main_vgg(argv):
     reduce_lr = keras.callbacks.LearningRateScheduler(lr_scheduler)
     sgd = SGD(lr=lr, decay=lr_decay, momentum=0.9, nesterov=True)
 
+    model_cp = keras.callbacks.ModelCheckpoint("Model/{0}.model".format(argv[1]))
+
     model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
     print(model.summary())
     batch_size = 128
@@ -58,10 +60,11 @@ def main_vgg(argv):
                         steps_per_epoch=x_train.shape[0] // batch_size,
                         epochs=int(argv[2]),
                         validation_data=(x_test, y_test),
-                        callbacks=[reduce_lr])
+                        callbacks=[reduce_lr, model_cp])
     print(model.evaluate(x_test, y_test))
 
-    model.save("Model/vgg.model")
+    model.save("Model/{0}.model".format(argv[1]))
+    model.save_weights("Model/{0}.weights".format(argv[1]))
 
 
 def main_resnet(argv):
