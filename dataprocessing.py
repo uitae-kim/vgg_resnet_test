@@ -1,10 +1,36 @@
+import numpy as np
+import random
 import keras
 import matplotlib.pyplot as plt
 
+def pad(x):
+    shape = x.shape
+    reference_shape = (shape[0] * 2, shape[1] * 2, shape[2])
+    x_left = random.randint(0, shape[0])
+    y_top = random.randint(0, shape[1])
+    offsets = (x_left, y_top, 0)
+
+    result = np.random.randint(0, 255, reference_shape)
+    insert_here = [slice(offsets[dim], offsets[dim]+x.shape[dim]) for dim in range(x.ndim)]
+    insert_here = tuple(insert_here)
+    result[insert_here] = x
+    return result
+
 def preprocess():
     dataset = keras.datasets.cifar10
-    
+
     (x_train, y_train), (x_test, y_test) = dataset.load_data()
+
+    shape = x_train[0].shape
+    ref = (shape[0] * 2, shape[1] * 2, shape[2])
+
+    x_train_new = np.zeros((x_train.shape[0], ref[0], ref[1], ref[2]), dtype=x_train[0].dtype)
+    for i, x in enumerate(x_train):
+        x_train_new[i] = pad(x)
+
+    x_test_new = np.zeros((x_test.shape[0], ref[0], ref[1], ref[2]), dtype=x_test[0].dtype)
+    for i, x in enumerate(x_test):
+        x_test_new[i] = pad(x)
 
     # 2 ~ 7이 동물이 들어가있음 --> 0
     for i, y in enumerate(y_train):
@@ -19,4 +45,4 @@ def preprocess():
         else:
             y_test[i] = 1
 
-    return (x_train, y_train), (x_test, y_test)
+    return (x_train_new, y_train), (x_test_new, y_test)
