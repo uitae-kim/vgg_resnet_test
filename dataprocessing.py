@@ -2,12 +2,14 @@ import numpy as np
 import random
 import keras
 import matplotlib.pyplot as plt
+import cv2
 
 def pad(x):
     shape = x.shape
     reference_shape = (shape[0] * 2, shape[1] * 2, shape[2])
-    x_left = random.randint(0, shape[0])
-    y_top = random.randint(0, shape[1])
+    x = randomize(x)
+    x_left = random.randint(0, reference_shape[0] - x.shape[0])
+    y_top = random.randint(0, reference_shape[1] - x.shape[1])
     offsets = (x_left, y_top, 0)
 
     result = np.random.randint(0, 255, reference_shape)
@@ -15,6 +17,14 @@ def pad(x):
     insert_here = tuple(insert_here)
     result[insert_here] = x
     return result
+
+def randomize(x: np.ndarray):
+    shape = x.shape
+    new_shape = (int(shape[0] * (random.random() + 0.5)),
+                 int(shape[1] * (random.random() + 0.5)))
+    x = cv2.resize(x, dsize=new_shape, interpolation=cv2.INTER_CUBIC)
+
+    return x
 
 def preprocess():
     dataset = keras.datasets.cifar10
