@@ -54,7 +54,7 @@ def main_vgg(argv):
 
     model_cp = keras.callbacks.ModelCheckpoint("Model/{0}.model".format(argv[1]))
 
-    model.compile(optimizer=sgd, loss='crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
     print(model.summary())
     batch_size = 128
     model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size),
