@@ -7,6 +7,7 @@ from vgg import VGG16, VGG
 from resnet import ResNet
 import numpy as np
 import sys
+import dataprocessing
 
 def normalize(X_train, X_test):
     mean = np.mean(X_train, axis=(0, 1, 2, 3))
@@ -18,12 +19,12 @@ def normalize(X_train, X_test):
 
 
 def main_vgg(argv):
-    dataset = keras.datasets.cifar10
-    (x_train, y_train), (x_test, y_test) = dataset.load_data()
+    # dataset = keras.datasets.cifar10
+    (x_train, y_train), (x_test, y_test) = dataprocessing.preprocess() # dataset.load_data()
 
     x_train, x_test = normalize(x_train.astype('float32'), x_test.astype('float32'))
-    y_train = keras.utils.to_categorical(y_train, num_classes=10)
-    y_test = keras.utils.to_categorical(y_test, num_classes=10)
+    # y_train = keras.utils.to_categorical(y_train, num_classes=10)
+    # y_test = keras.utils.to_categorical(y_test, num_classes=10)
 
     datagen = ImageDataGenerator(
         featurewise_center=False,
@@ -53,7 +54,7 @@ def main_vgg(argv):
 
     model_cp = keras.callbacks.ModelCheckpoint("Model/{0}.model".format(argv[1]))
 
-    model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=sgd, loss='crossentropy', metrics=['accuracy'])
     print(model.summary())
     batch_size = 128
     model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size),

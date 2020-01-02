@@ -15,7 +15,7 @@ class VGG(Sequential):
                 self.add(Flatten())
                 for j in range(len(conv_layer)-1):
                     self.add(Dense(conv_layer[j], activation='relu', kernel_regularizer=keras.regularizers.l2(l2_reg)))
-                self.add(Dense(conv_layer[-1], activation='softmax'))
+                self.add(Dense(conv_layer[-1], activation='sigmoid'))
             else:
                 for j in range(len(conv_layer)):
                     if j == 0 and i == 0:
