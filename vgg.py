@@ -19,7 +19,7 @@ class VGG(Sequential):
             else:
                 for j in range(len(conv_layer)):
                     if j == 0 and i == 0:
-                        self.add_conv(conv_layer[j], input_shape=(32, 32, 3))
+                        self.add_conv(conv_layer[j], input_shape=(64, 64, 3))
                     else:
                         self.add_conv(conv_layer[j])
 
