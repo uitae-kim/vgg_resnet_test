@@ -116,7 +116,7 @@ def preprocess():
 
     for i in range(10000):
         data_index = []
-        if i < 40000:
+        if i < 4000:
             zero_cnt = 4
         else:
             zero_cnt = np.random.randint(1, 3)
