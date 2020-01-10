@@ -65,14 +65,14 @@ def preprocess():
             label_one.append(i)
 
     x_train_new = np.zeros((x_train.shape[0], ref[0], ref[1], ref[2]), dtype=x_train[0].dtype)
+    y_train_new = np.zeros(y_train.shape, dtype=y_train[0].dtype)
     """
     for i, x in enumerate(x_train):
     x_train_new[i] = pad(x)
     """
 
-    x_index = []
-
     for i in range(50000):
+        data_index = []
         if i < 20000:
             zero_cnt = 4
         else:
@@ -80,20 +80,21 @@ def preprocess():
         rand_num = np.random.randint(0, len(label_zero)-1)
 
         for j in range(zero_cnt):
-            while rand_num in x_index:
+            while label_zero[rand_num] in data_index:
                 rand_num = np.random.randint(0, len(label_zero) - 1)
-            x_index.append(rand_num)
+            data_index.append(label_zero[rand_num])
 
         rand_num = np.random.randint(0, len(label_one)-1)
         for j in range(4-zero_cnt):
-            while rand_num in x_index:
+            while label_one[rand_num] in data_index:
                 rand_num = np.random.randint(0, len(label_one) - 1)
-            x_index.append(rand_num)
+            data_index.append(label_one[rand_num])
 
-        random.shuffle(x_index)
+        random.shuffle(data_index)
 
-        x_train_new[i] = patch(x_index, x_train)
-        x_index.clear()
+        x_train_new[i] = patch(data_index, x_train)
+        # zero count가 0 레이블의 개수이므로, 이렇게 연산하면 zero가 하나도 없는 경우에만 0이 됨
+        y_train_new[i] = 1 - zero_cnt// 4
 
     label_one.clear()
     label_zero.clear()
@@ -107,12 +108,14 @@ def preprocess():
             label_one.append(i)
 
     x_test_new = np.zeros((x_test.shape[0], ref[0], ref[1], ref[2]), dtype=x_test[0].dtype)
+    y_test_new = np.zeros(y_test.shape, dtype=y_test[0].dtype)
     """
     for i, x in enumerate(x_test):
     x_test_new[i] = pad(x)
     """
 
     for i in range(10000):
+        data_index = []
         if i < 40000:
             zero_cnt = 4
         else:
@@ -120,20 +123,21 @@ def preprocess():
         rand_num = np.random.randint(0, len(label_zero)-1)
 
         for j in range(zero_cnt):
-            while rand_num in x_index:
+            while label_zero[rand_num] in data_index:
                 rand_num = np.random.randint(0, len(label_zero) - 1)
-            x_index.append(rand_num)
+            data_index.append(label_zero[rand_num])
 
         rand_num = np.random.randint(0, len(label_one)-1)
         for j in range(4-zero_cnt):
-            while rand_num in x_index:
+            while label_one[rand_num] in data_index:
                 rand_num = np.random.randint(0, len(label_one) - 1)
-            x_index.append(rand_num)
+            data_index.append(label_one[rand_num])
 
-        random.shuffle(x_index)
+        random.shuffle(data_index)
 
-        x_test_new[i] = patch(x_index, x_test)
-        x_index.clear()
+        x_test_new[i] = patch(data_index, x_test)
+        # zero count가 0 레이블의 개수이므로, 이렇게 연산하면 zero가 하나도 없는 경우에만 0이 됨
+        y_test_new[i] = 1 - zero_cnt // 4
 
-    return (x_train_new, y_train), (x_test_new, y_test)
+    return (x_train_new, y_train_new), (x_test_new, y_test_new)
 
