@@ -9,20 +9,24 @@ import numpy as np
 import sys
 import dataprocessing
 
-def normalize(X_train, X_test):
+def meanStd(X_train, X_test):
     mean = np.mean(X_train, axis=(0, 1, 2, 3))
     std = np.std(X_train, axis=(0, 1, 2, 3))
-    X_train = (X_train - mean) / (std + 1e-7)
-    X_test = (X_test - mean) / (std + 1e-7)
 
-    return X_train, X_test
+    return mean, std
 
+def normalize(X, mean, std):
+    X = (X - mean)/(std + 1e-7)
+
+    return X
 
 def main_vgg(argv):
     # dataset = keras.datasets.cifar10
     (x_train, y_train), (x_test, y_test) = dataprocessing.preprocess() # dataset.load_data()
 
-    x_train, x_test = normalize(x_train.astype('float32'), x_test.astype('float32'))
+    mean, std = meanStd(x_train.astype('float32'), x_test.astype('float32'))
+    x_train = normalize(x_train.astype('float32'), mean, std)
+    x_test = normalize(x_test.astype('float32'), mean, std)
     # y_train = keras.utils.to_categorical(y_train, num_classes=10)
     # y_test = keras.utils.to_categorical(y_test, num_classes=10)
 

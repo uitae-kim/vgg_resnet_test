@@ -173,6 +173,12 @@ def preprocess(type="bg"):
             else:
                 y_train[i] = 1
 
+        for i, y in enumerate(y_test):
+            if 2 <= y <= 7:
+                y_test[i] = 0
+            else:
+                y_test[i] = 1
+
         x_train_new = np.zeros((x_train.shape[0], ref[0], ref[1], ref[2]), dtype=x_train[0].dtype)
 
         x_test_new = np.zeros((x_test.shape[0], ref[0], ref[1], ref[2]), dtype=x_test[0].dtype)
@@ -208,6 +214,7 @@ def preprocess(type="bg"):
             x_test_new[i][insert_here] = x
 
         return (x_train_new, y_train), (x_test_new, y_test)
+
 
 
 
