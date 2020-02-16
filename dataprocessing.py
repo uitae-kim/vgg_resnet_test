@@ -151,7 +151,7 @@ def preprocess(type="bg"):
         return (x_train_new, y_train_new), (x_test_new, y_test_new)
     else:
         background = []
-        path = "/Users/DavidJeong 1/Desktop"
+        path = "/Users/DavidJeong1/Desktop"
         l = os.listdir(path)
         for p in l:
             if "Road" in p:
