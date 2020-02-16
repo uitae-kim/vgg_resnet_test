@@ -174,10 +174,8 @@ def preprocess(type="bg"):
                 y_train[i] = 1
 
         x_train_new = np.zeros((x_train.shape[0], ref[0], ref[1], ref[2]), dtype=x_train[0].dtype)
-        y_train_new = np.zeros(y_train.shape, dtype=y_train[0].dtype)
 
         x_test_new = np.zeros((x_test.shape[0], ref[0], ref[1], ref[2]), dtype=x_test[0].dtype)
-        y_test_new = np.zeros(y_test.shape, dtype=y_test[0].dtype)
 
         for i in range(50000):
             rand_num = np.random.randint(0, 3)
@@ -209,7 +207,7 @@ def preprocess(type="bg"):
             insert_here = tuple(insert_here)
             x_test_new[i][insert_here] = x
 
-        return (x_train_new, y_train_new), (x_test_new, y_test_new)
+        return (x_train_new, y_train), (x_test_new, y_test)
 
 
 
