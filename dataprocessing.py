@@ -166,56 +166,132 @@ def preprocess(type="bg"):
 
         ref = (128, 128, 3)
 
+        label_one = []
+        label_zero = []
+
         # 2 ~ 7이 동물이 들어가있음 --> 0
         for i, y in enumerate(y_train):
             if 2 <= y <= 7:
                 y_train[i] = 0
+                label_zero.append(i)
             else:
                 y_train[i] = 1
+                label_one.append(i)
+
+        label_one.clear()
+        label_zero.clear()
 
         for i, y in enumerate(y_test):
             if 2 <= y <= 7:
                 y_test[i] = 0
+                label_zero.append(i)
             else:
                 y_test[i] = 1
+                label_one.append(i)
 
         x_train_new = np.zeros((x_train.shape[0], ref[0], ref[1], ref[2]), dtype=x_train[0].dtype)
+        y_train_new = np.zeros(y_train.shape, dtype=y_train[0].dtype)
 
         x_test_new = np.zeros((x_test.shape[0], ref[0], ref[1], ref[2]), dtype=x_test[0].dtype)
+        y_test_new = np.zeros(y_test.shape, dtype=y_test[0].dtype)
 
         for i in range(50000):
             rand_num = np.random.randint(0, 3)
             x_train_new[i] = background[rand_num]
 
-            x = x_train[i]
+            if i < 25000:
+                rand_num = np.random.randint(0, len(label_zero) - 1)
+                x_one = x_train[label_zero[rand_num]]
+
+                rand_num = np.random.randint(0, len(label_one)-1)
+                x_two = x_train[label_one[rand_num]]
+
+                y_train_new[i] = 1
+            else:
+                rand_num = np.random.randint(0, len(label_zero)-1)
+                prev = rand_num
+                x_one = x_train[label_zero[rand_num]]
+
+                y_train_new[i] = 0
+
+                while rand_num == prev:
+                    rand_num = np.random.randint(0, len(label_zero)-1)
+                x_two = x_train[label_zero[rand_num]]
 
             reference_shape = (128, 128, 3)
-            x_left = random.randint(0, reference_shape[0] - x.shape[0])
-            y_top = random.randint(0, reference_shape[1] - x.shape[1])
-            offsets = (x_left, y_top, 0)
+            x_left_one = random.randint(0, reference_shape[0] - x_one.shape[0])
+            y_top_one = random.randint(0, reference_shape[1] - x_one.shape[1])
+            offsets = (x_left_one, y_top_one, 0)
 
-            insert_here = [slice(offsets[dim], offsets[dim] + x.shape[dim]) for dim in range(x.ndim)]
+            x_left_two = x_left_one
+            y_top_two = y_top_one
+
+            while x_left_one-16 < x_left_two+16 < x_left_one+48 and y_top_one-16 < y_top_two+16 < y_top_one+48:
+                x_left_two = random.randint(0, reference_shape[0]-x_two.shape[0])
+                y_top_two = random.randint(0, reference_shape[0]-x_two.shape[1])
+
+            insert_here = [slice(offsets[dim], offsets[dim] + x_one.shape[dim]) for dim in range(x_one.ndim)]
             insert_here = tuple(insert_here)
-            x_train_new[i][insert_here] = x
+            x_train_new[i][insert_here] = x_one
+
+            offsets = (x_left_two, y_top_two, 0)
+            insert_here = [slice(offsets[dim], offsets[dim] + x_two.shape[dim]) for dim in range(x_two.ndim)]
+            insert_here = tuple(insert_here)
+            x_train_new[i][insert_here] = x_two
 
         for i in range(10000):
             rand_num = np.random.randint(0, 3)
             x_test_new[i] = background[rand_num]
 
-            x = x_test[i]
+            if i < 5000:
+                rand_num = np.random.randint(0, len(label_zero) - 1)
+                x_one = x_test[label_zero[rand_num]]
+
+                rand_num = np.random.randint(0, len(label_one) - 1)
+                x_two = x_test[label_one[rand_num]]
+
+                y_test_new[i] = 1
+            else:
+                rand_num = np.random.randint(0, len(label_zero) - 1)
+                prev = rand_num
+                x_one = x_test[label_zero[rand_num]]
+
+                y_test_new[i] = 0
+
+                while rand_num == prev:
+                    rand_num = np.random.randint(0, len(label_zero) - 1)
+                x_two = x_test[label_zero[rand_num]]
 
             reference_shape = (128, 128, 3)
-            x_left = random.randint(0, reference_shape[0] - x.shape[0])
-            y_top = random.randint(0, reference_shape[1] - x.shape[1])
-            offsets = (x_left, y_top, 0)
+            x_left_one = random.randint(0, reference_shape[0] - x_one.shape[0])
+            y_top_one = random.randint(0, reference_shape[1] - x_one.shape[1])
+            offsets = (x_left_one, y_top_one, 0)
 
-            insert_here = [slice(offsets[dim], offsets[dim] + x.shape[dim]) for dim in range(x.ndim)]
+            x_left_two = x_left_one
+            y_top_two = y_top_one
+
+            while x_left_one - 16 < x_left_two + 16 < x_left_one + 48 and y_top_one - 16 < y_top_two + 16 < y_top_one + 48:
+                x_left_two = random.randint(0, reference_shape[0] - x_two.shape[0])
+                y_top_two = random.randint(0, reference_shape[0] - x_two.shape[1])
+
+            insert_here = [slice(offsets[dim], offsets[dim] + x_one.shape[dim]) for dim in range(x_one.ndim)]
             insert_here = tuple(insert_here)
-            x_test_new[i][insert_here] = x
+            x_test_new[i][insert_here] = x_one
 
-        return (x_train_new, y_train), (x_test_new, y_test)
+            offsets = (x_left_two, y_top_two, 0)
+            insert_here = [slice(offsets[dim], offsets[dim] + x_two.shape[dim]) for dim in range(x_two.ndim)]
+            insert_here = tuple(insert_here)
+            x_test_new[i][insert_here] = x_two
 
+        return (x_train_new, y_train_new), (x_test_new, y_test_new)
 
+if __name__ == "__main__":
+    (x_train, y_train), (x_test, y_test) = preprocess()
+
+    for i, x in enumerate(x_test):
+        print(y_test[i])
+        plt.imshow(x)
+        plt.show()
 
 
 
