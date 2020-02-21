@@ -47,7 +47,7 @@ def main_vgg(argv):
 
     model = VGG(argv[1])
 
-    lr = 0.1
+    lr = 0.01
     lr_decay = 1e-6
     lr_drop = 20
 
