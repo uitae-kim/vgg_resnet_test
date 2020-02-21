@@ -22,7 +22,10 @@ def normalize(X, mean, std):
 
 def main_vgg(argv):
     # dataset = keras.datasets.cifar10
-    (x_train, y_train), (x_test, y_test) = dataprocessing.preprocess() # dataset.load_data()
+    scale = 1
+    if len(argv) >= 3:
+        scale = float(argv[2])
+    (x_train, y_train), (x_test, y_test) = dataprocessing.preprocess(scale=scale) # dataset.load_data()
 
     mean, std = meanStd(x_train.astype('float32'), x_test.astype('float32'))
     x_train = normalize(x_train.astype('float32'), mean, std)

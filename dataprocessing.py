@@ -145,7 +145,7 @@ def patch_internal():
 
     return (x_train_new, y_train_new), (x_test_new, y_test_new)
 
-def preprocess(type="bg"):
+def preprocess(type="bg", scale=1):
     if type=="patch":
         (x_train_new, y_train_new), (x_test_new, y_test_new) = patch_internal()
         return (x_train_new, y_train_new), (x_test_new, y_test_new)
@@ -195,11 +195,11 @@ def preprocess(type="bg"):
         x_test_new = np.zeros((x_test.shape[0], ref[0], ref[1], ref[2]), dtype=x_test[0].dtype)
         y_test_new = np.zeros(y_test.shape, dtype=y_test[0].dtype)
 
-        for i in range(50000):
+        for i in range(int(50000 * scale)):
             rand_num = np.random.randint(0, 3)
             x_train_new[i] = background[rand_num]
 
-            if i < 25000:
+            if i < 25000 * scale:
                 rand_num = np.random.randint(0, len(label_zero) - 1)
                 x_one = x_train[label_zero[rand_num]]
 
@@ -239,11 +239,11 @@ def preprocess(type="bg"):
             insert_here = tuple(insert_here)
             x_train_new[i][insert_here] = x_two
 
-        for i in range(10000):
+        for i in range(int(10000 * scale)):
             rand_num = np.random.randint(0, 3)
             x_test_new[i] = background[rand_num]
 
-            if i < 5000:
+            if i < 5000 * scale:
                 rand_num = np.random.randint(0, len(label_zero) - 1)
                 x_one = x_test[label_zero[rand_num]]
 
